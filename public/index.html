@@ -1,0 +1,55 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.io Chat</title>
+  <style>
+    #messages-container {
+      width: 300px;
+      height: 400px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      overflow-y: scroll;
+    }
+    #message-input {
+      width: 250px;
+    }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    function sendMessage() {
+      const messageInput = document.getElementById('message-input');
+      const message = messageInput.value.trim();
+
+      if (message !== '') {
+        socket.emit('chat message', message);
+        messageInput.value = '';
+      }
+    }
+
+    socket.on('chat message', (msg) => {
+      // const messagesContainer = document.getElementById('messages-container');
+      // const messageElement = document.createElement('li');
+      // messageElement.textContent = msg;
+      // messagesContainer.appendChild(messageElement);
+      displayMessage('You', msg)
+    });
+
+
+    function displayMessage(sender, message) {
+      const messagesContainer = document.getElementById("messages-container");
+      const messageElement = document.createElement("div");
+      messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+    }
+  </script>
+</head>
+<body>
+  <ul id="messages-container"></ul>
+  <input type="text" id="message-input" placeholder="Type a message...">
+  <button onclick="sendMessage()">Send</button>
+</body>
+</html>
